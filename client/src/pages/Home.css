@@ -1,0 +1,200 @@
+.home-page { background: var(--bg); overflow-y: auto; }
+
+/* Hero */
+.home-header {
+  position: relative;
+  padding: 48px 24px 36px;
+  overflow: hidden;
+  background: linear-gradient(160deg, #1a3a6e 0%, #2D7FF9 60%, #6366f1 100%);
+}
+.home-header-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 80% 20%, rgba(255,255,255,0.12) 0%, transparent 50%),
+    radial-gradient(circle at 10% 80%, rgba(99,102,241,0.3) 0%, transparent 50%);
+}
+.home-header-content { position: relative; z-index: 1; }
+
+.home-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.18);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #fff;
+  padding: 4px 14px;
+  border-radius: 99px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  letter-spacing: 0.3px;
+}
+.home-title {
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+.home-tagline {
+  color: rgba(255,255,255,0.82);
+  font-size: 0.92rem;
+  font-weight: 400;
+  margin-bottom: 24px;
+}
+.home-stats {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.stat-pill { text-align: center; }
+.stat-num {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+}
+.stat-label {
+  display: block;
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.7);
+  font-weight: 500;
+  margin-top: 2px;
+}
+.stat-divider {
+  width: 1px;
+  height: 28px;
+  background: rgba(255,255,255,0.25);
+}
+
+/* Sections */
+.home-section { padding: 20px 16px 0; }
+.section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+/* Card Grid */
+.card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.home-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 18px 16px 14px;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+.home-card::before {
+  content: '';
+  position: absolute;
+  top: -30%;
+  right: -20%;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+}
+.home-card:hover  { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+.home-card:active { transform: scale(0.97); }
+
+.home-card-emoji { font-size: 1.8rem; margin-bottom: 8px; }
+.home-card-title { font-size: 0.92rem; font-weight: 700; color: #fff; margin-bottom: 2px; }
+.home-card-desc  { font-size: 0.72rem; color: rgba(255,255,255,0.75); font-weight: 400; }
+.home-card-arrow {
+  position: absolute;
+  bottom: 12px;
+  right: 14px;
+  color: rgba(255,255,255,0.6);
+  font-size: 1rem;
+}
+
+/* Quick Facts */
+.quick-facts { display: flex; flex-direction: column; gap: 8px; }
+.quick-fact {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  box-shadow: var(--shadow-sm);
+}
+.quick-fact-emoji { font-size: 1.2rem; flex-shrink: 0; }
+.quick-fact-text  { font-size: 0.82rem; font-weight: 500; color: var(--text); }
+
+/* CTA Banner */
+.cta-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 24px rgba(15,23,42,0.25);
+}
+.cta-banner:hover  { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(15,23,42,0.3); }
+.cta-banner:active { transform: scale(0.98); }
+.cta-label { font-size: 0.72rem; color: rgba(255,255,255,0.6); margin-bottom: 2px; }
+.cta-title { font-size: 1rem; font-weight: 700; color: #fff; }
+.cta-icon  { font-size: 2rem; }
+
+/* India Voter ID Banner */
+.india-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 50%, #dcfce7 100%);
+  border: 1.5px solid #fbbf24;
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 16px rgba(251,191,36,0.2);
+  position: relative;
+  overflow: hidden;
+}
+.india-banner::before {
+  content: '🇮🇳';
+  position: absolute;
+  right: 60px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2.5rem;
+  opacity: 0.08;
+}
+.india-banner:hover  { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(251,191,36,0.3); }
+.india-banner:active { transform: scale(0.98); }
+
+.india-banner-left { display: flex; align-items: center; gap: 12px; }
+.india-icon { font-size: 1.8rem; flex-shrink: 0; }
+.india-title {
+  font-size: 0.92rem; font-weight: 700; color: #92400e; margin-bottom: 2px;
+}
+.india-sub { font-size: 0.72rem; color: #a16207; }
+.india-cta {
+  display: flex; align-items: center; gap: 4px;
+  background: #f59e0b; color: #fff;
+  padding: 6px 14px; border-radius: 99px;
+  font-size: 0.76rem; font-weight: 700;
+  box-shadow: 0 2px 8px rgba(245,158,11,0.4);
+  flex-shrink: 0;
+}

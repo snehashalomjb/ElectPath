@@ -1,0 +1,162 @@
+.process-page { background: var(--bg); }
+
+.back-btn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  color: var(--text);
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.back-btn:hover { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
+
+/* Progress strip */
+.progress-strip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+}
+.progress-track {
+  flex: 1;
+  height: 4px;
+  background: var(--border);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2D7FF9, #6366f1);
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+.progress-text { font-size: 0.72rem; font-weight: 600; color: var(--primary); white-space: nowrap; }
+
+/* Step list */
+.process-list { padding: 20px 16px 32px; display: flex; flex-direction: column; gap: 0; }
+
+/* Step card */
+.step-card {
+  position: relative;
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  margin-bottom: 10px;
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-shadow: var(--shadow-sm);
+}
+.step-card.step-open {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(45,127,249,0.1), var(--shadow-md);
+}
+
+.step-connector {
+  display: none; /* Using margin-gap instead */
+}
+
+/* Step header (button) */
+.step-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+}
+.step-header:hover { background: var(--bg); }
+
+.step-number-wrap { flex-shrink: 0; }
+.step-circle {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  transition: all 0.2s;
+}
+.step-circle.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(45,127,249,0.4);
+}
+
+.step-header-text {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.step-emoji { font-size: 1.1rem; }
+.step-title { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+
+.step-chevron {
+  color: var(--text-muted);
+  transition: transform 0.25s;
+  flex-shrink: 0;
+}
+.step-chevron.open { transform: rotate(180deg); color: var(--primary); }
+
+/* Step body */
+.step-body {
+  padding: 0 16px 18px;
+  border-top: 1px solid var(--border);
+}
+.step-desc {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+  margin: 14px 0 12px;
+}
+
+.step-section { margin-top: 14px; }
+.step-section-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+.step-what {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  background: var(--primary-light);
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--primary);
+}
+
+.step-actions { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.step-action-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.83rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+.step-action-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--success);
+  flex-shrink: 0;
+  margin-top: 6px;
+}

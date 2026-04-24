@@ -1,0 +1,14 @@
+node_modules
+client/node_modules
+client/.vite
+client/dist
+.env
+.env.*
+*.log
+.git
+.gitignore
+README.md
+*.md
+development_roadmap.md
+project_charter.md
+system_architecture.md
