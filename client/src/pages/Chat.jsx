@@ -15,8 +15,8 @@ function formatMessage(text) {
 const WELCOME_MSG = {
   id: 'welcome',
   role: 'assistant',
-  content: `👋 Hi! I'm **ElectPath AI** — your personal voting guide.\n\nI can help you with:\n- 📋 **Register to vote** step by step\n- 🪪 **Voter ID** requirements by state\n- 📅 **Deadlines & key dates**\n- 🗳️ **Election Day** complete guide\n- ✉️ **Mail-in & absentee** voting\n\nWhat would you like to know?`,
-  time: new Date(),
+  content: `👋 Hi! I'm **ElectPath AI** — your personal voting guide.\n\nI can help you with:\n- 📋 **Register to vote** step by step\n- 🪪 **Voter ID** requirements by state\n- 📅 **Deadlines & key dates**\n- 🗳️ **Election Day** complete guide\n- ✉️ **Mail-in & absentee** voting\n- 🇮🇳 **Voter ID India** (EPIC via ECI)\n\nWhat would you like to know?`,
+  time: '2026-01-01T00:00:00.000Z',  // stable — avoids timestamp drift on hot reload
   followUps: ['How do I register to vote?', 'What ID do I need?', 'When is Election Day?', 'How does mail-in voting work?'],
 };
 
@@ -91,7 +91,11 @@ export default function Chat() {
     if (!msg || isThinking || isStreaming) return;
 
     const userMsg = { id: Date.now(), role: 'user', content: msg, time: new Date() };
-    setMessages(prev => [...prev, userMsg]);
+    // Cap history at 60 messages to prevent localStorage overflow (BUG-004)
+    setMessages(prev => {
+      const next = [...prev, userMsg];
+      return next.length > 60 ? next.slice(next.length - 60) : next;
+    });
     setInput('');
     setCharCount(0);
     setIsThinking(true);
@@ -103,6 +107,9 @@ export default function Chat() {
       .map(m => ({ role: m.role, content: m.content }));
 
     const botId = Date.now() + 1;
+    // Abort controller to cancel fetch on unmount (BUG-005)
+    const controller = new AbortController();
+    abortRef.current = controller;
 
     try {
       const response = await fetch('/api/chat/stream', {
@@ -118,6 +125,7 @@ export default function Chat() {
             hasVoterId: savedProfile.hasVoterId,
           } : null,
         }),
+        signal: controller.signal,  // abort on unmount
       });
 
       if (!response.ok) throw new Error('Server error');
@@ -157,6 +165,7 @@ export default function Chat() {
 
       setMessages(prev => prev.map(m => m.id === botId ? { ...m, content: fullContent, followUps, time: new Date() } : m));
     } catch (err) {
+      if (err.name === 'AbortError') return; // BUG-005: clean unmount
       setIsThinking(false);
       setMessages(prev => [...prev, {
         id: botId, role: 'assistant', time: new Date(), followUps: [],
@@ -165,9 +174,13 @@ export default function Chat() {
     } finally {
       setIsThinking(false);
       setIsStreaming(false);
+      abortRef.current = null;
       setTimeout(() => inputRef.current?.focus(), 100);
     }
   }, [isThinking, isStreaming, normalizedMessages, savedProfile, setMessages]);
+
+  // BUG-005: cancel in-flight stream when component unmounts
+  useEffect(() => () => { abortRef.current?.abort(); }, []);
 
   const toggleVoice = () => {
     if (!voiceSupported) return;
@@ -304,7 +317,7 @@ export default function Chat() {
             value={input} onChange={handleInputChange} onKeyDown={handleKeyDown}
             rows={1} maxLength={500} disabled={voiceActive} aria-label="Chat input" />
 
-          {charCount > 300 && <span className="char-count">{500 - charCount}</span>}
+          {charCount > 400 && <span className="char-count" style={{color: charCount > 470 ? 'var(--alert)' : undefined}}>{500 - charCount}</span>}
 
           <button id="chat-send-btn" className={`send-btn ${input.trim() && !busy ? 'send-active' : ''}`}
             onClick={() => sendMessage(input)} disabled={!input.trim() || busy} type="button">

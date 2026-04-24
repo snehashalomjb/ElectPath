@@ -105,16 +105,25 @@ export default function Timeline() {
         </div>
       )}
 
-      {/* Filter tabs */}
-      <div className="tl-filter-tabs">
-        {['all', 'completed', 'active', 'upcoming'].map(f => (
+      {/* Filter tabs — BUG-007: keyboard accessible with ARIA */}
+      <div className="tl-filter-tabs" role="tablist" aria-label="Filter events">
+        {[
+          { key: 'all',       label: 'All',       count: events.length },
+          { key: 'completed', label: 'Completed', count: counts.completed },
+          { key: 'active',    label: 'Active',    count: counts.active },
+          { key: 'upcoming',  label: 'Upcoming',  count: counts.upcoming },
+        ].map(f => (
           <button
-            key={f}
-            id={`filter-${f}`}
-            className={`tl-filter-tab ${filter === f ? 'active' : ''}`}
-            onClick={() => setFilter(f)}
+            key={f.key}
+            id={`filter-${f.key}`}
+            role="tab"
+            aria-selected={filter === f.key}
+            className={`tl-filter-tab ${filter === f.key ? 'active' : ''}`}
+            onClick={() => setFilter(f.key)}
+            onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && setFilter(f.key)}
           >
-            {f.charAt(0).toUpperCase() + f.slice(1)}
+            {f.label}
+            {!loading && <span className="tl-filter-count">{f.count}</span>}
           </button>
         ))}
       </div>

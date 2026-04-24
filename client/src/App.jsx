@@ -1,21 +1,25 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
-import Home from './pages/Home';
-import ElectionProcess from './pages/ElectionProcess';
-import Chat from './pages/Chat';
-import Timeline from './pages/Timeline';
-import Profile from './pages/Profile';
-import Splash from './pages/Splash';
-import VoterIdIndia from './pages/VoterIdIndia';
+
+// Splash & BottomNav are NOT lazy — must be available instantly
+import Splash   from './pages/Splash';
 import BottomNav from './components/BottomNav';
+
+// Code-split all pages for faster initial load
+const Home            = lazy(() => import('./pages/Home'));
+const ElectionProcess = lazy(() => import('./pages/ElectionProcess'));
+const Chat            = lazy(() => import('./pages/Chat'));
+const Timeline        = lazy(() => import('./pages/Timeline'));
+const Profile         = lazy(() => import('./pages/Profile'));
+const VoterIdIndia    = lazy(() => import('./pages/VoterIdIndia'));
+const NotFound        = lazy(() => import('./pages/NotFound'));
 
 export default function App() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [showSplash, setShowSplash] = useState(() => {
-    // Show splash only once per session
-    return !sessionStorage.getItem('splashShown');
-  });
+  const [showSplash, setShowSplash] = useState(() =>
+    !sessionStorage.getItem('splashShown')
+  );
 
   const handleSplashDone = () => {
     sessionStorage.setItem('splashShown', 'true');
@@ -23,7 +27,6 @@ export default function App() {
     document.body.classList.add('app-ready');
   };
 
-  // If no splash, ensure body class is correct
   useEffect(() => {
     if (!showSplash) document.body.classList.add('app-ready');
   }, [showSplash]);
@@ -39,14 +42,22 @@ export default function App() {
 
   return (
     <>
-      <Routes>
-        <Route path="/"            element={<Home     navigate={navigate} />} />
-        <Route path="/process"     element={<ElectionProcess />} />
-        <Route path="/chat"        element={<Chat />} />
-        <Route path="/timeline"    element={<Timeline />} />
-        <Route path="/profile"     element={<Profile />} />
-        <Route path="/voter-india" element={<VoterIdIndia />} />
-      </Routes>
+      <Suspense fallback={
+        <div className="page-loading">
+          <div className="spinner" />
+          <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: 12 }}>Loading…</p>
+        </div>
+      }>
+        <Routes>
+          <Route path="/"            element={<Home navigate={navigate} />} />
+          <Route path="/process"     element={<ElectionProcess />} />
+          <Route path="/chat"        element={<Chat />} />
+          <Route path="/timeline"    element={<Timeline />} />
+          <Route path="/profile"     element={<Profile />} />
+          <Route path="/voter-india" element={<VoterIdIndia />} />
+          <Route path="*"            element={<NotFound />} />
+        </Routes>
+      </Suspense>
       <BottomNav
         items={navItems}
         currentPath={location.pathname}

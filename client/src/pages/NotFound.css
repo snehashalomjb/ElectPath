@@ -1,0 +1,26 @@
+.nf-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(var(--phone-h) - var(--nav-height));
+  background: var(--bg);
+  padding: 24px;
+}
+.nf-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.nf-emoji { font-size: 3rem; }
+.nf-code  {
+  font-size: 4rem; font-weight: 900;
+  background: linear-gradient(135deg, #2D7FF9, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+}
+.nf-title { font-size: 1.2rem; font-weight: 700; color: var(--text); }
+.nf-sub   { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px; }
+.nf-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }

@@ -50,6 +50,28 @@
   box-shadow: var(--shadow-primary);
 }
 .tl-filter-tab:hover:not(.active) { border-color: var(--primary); color: var(--primary); }
+.tl-filter-tab:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+.tl-filter-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 5px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 99px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  background: rgba(255,255,255,0.25);
+  color: inherit;
+}
+.tl-filter-tab:not(.active) .tl-filter-count {
+  background: var(--border);
+  color: var(--text-muted);
+}
 
 /* Timeline list */
 .timeline-list {
