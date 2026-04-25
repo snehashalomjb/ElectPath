@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { timelineApi } from '../api';
+import { useLang } from '../context/LangContext';
 import './Timeline.css';
 
 const STATUS_CONFIG = {
@@ -59,6 +60,7 @@ function TimelineEvent({ event, index }) {
 }
 
 export default function Timeline() {
+  const { t } = useLang();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -83,8 +85,8 @@ export default function Timeline() {
     <div className="timeline-page page">
       {/* Header */}
       <div className="screen-header">
-        <h2>Election Timeline</h2>
-        <p>Key dates for Election 2026</p>
+        <h2>{t('electionTimeline')}</h2>
+        <p>{t('keyDatesFor')}</p>
       </div>
 
       {/* Summary pills */}
@@ -108,10 +110,10 @@ export default function Timeline() {
       {/* Filter tabs — BUG-007: keyboard accessible with ARIA */}
       <div className="tl-filter-tabs" role="tablist" aria-label="Filter events">
         {[
-          { key: 'all',       label: 'All',       count: events.length },
-          { key: 'completed', label: 'Completed', count: counts.completed },
-          { key: 'active',    label: 'Active',    count: counts.active },
-          { key: 'upcoming',  label: 'Upcoming',  count: counts.upcoming },
+          { key: 'all',       label: t('all'),       count: events.length },
+          { key: 'completed', label: t('completed'), count: counts.completed },
+          { key: 'active',    label: t('active'),    count: counts.active },
+          { key: 'upcoming',  label: t('upcoming'),  count: counts.upcoming },
         ].map(f => (
           <button
             key={f.key}

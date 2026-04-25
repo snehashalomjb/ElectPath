@@ -220,6 +220,18 @@ input, textarea, select { font-family: var(--font); }
 .badge-primary { background: var(--primary-light); color: var(--primary-dark); }
 .badge-alert   { background: var(--alert-bg);   color: #dc2626; }
 
+/* ---------- Global Top Action Bar — bell + lang picker ---------- */
+.global-top-bar {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  z-index: 150;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: all;
+}
+
 /* ---------- Bottom Nav — pinned to bottom of phone frame ---------- */
 .bottom-nav {
   position: absolute;

@@ -32,20 +32,16 @@ app.use(helmet({
 }));
 
 // ── CORS ─────────────────────────────────────────────────────────────────────
-const allowedOrigins = isProd
-  ? [process.env.CLIENT_URL].filter(Boolean)   // set CLIENT_URL in Cloud Run
-  : ['http://localhost:5173', 'http://localhost:4173'];
-
 app.use(cors({
-  origin: (origin, cb) => {
-    if (!origin || !isProd) return cb(null, true);  // allow all in dev
-    if (allowedOrigins.includes(origin)) return cb(null, true);
-    cb(new Error('CORS not allowed'));
-  },
+  origin: true,   // allow same-origin requests (frontend served by same Express server)
   credentials: true,
 }));
 
-app.use(express.json({ limit: '50kb' }));  // prevent oversized payloads
+app.use(express.json({ limit: '50kb' }));
+
+// ── Trust Proxy (required for Cloud Run / load balancers) ────────────────────
+// Without this, express-rate-limit throws a ValidationError in production
+app.set('trust proxy', 1);
 
 // ── Rate Limiting ─────────────────────────────────────────────────────────────
 // Global: 120 requests/min per IP
@@ -54,6 +50,7 @@ const globalLimiter = rateLimit({
   max: 120,
   standardHeaders: true,
   legacyHeaders: false,
+  validate: { xForwardedForHeader: false },   // disable proxy validation
   message: { error: 'Too many requests. Please slow down.' },
 });
 
@@ -61,6 +58,7 @@ const globalLimiter = rateLimit({
 const chatLimiter = rateLimit({
   windowMs: 60 * 1000,
   max: 20,
+  validate: { xForwardedForHeader: false },
   message: { error: 'Chat rate limit reached. Please wait a moment.' },
 });
 

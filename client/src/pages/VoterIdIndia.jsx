@@ -1,21 +1,25 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLocalStorage } from '../hooks';
+import { useLang } from '../context/LangContext';
+import { INDIA_STATES } from '../data/indiaStates';
 import './VoterIdIndia.css';
 
+/* ── Constants ────────────────────────────────────────────────────────────── */
 const STEPS = [
-  { num: 1, label: 'Eligibility' },
-  { num: 2, label: 'Documents' },
-  { num: 3, label: 'Apply' },
-  { num: 4, label: 'Track' },
+  { num: 1, label: 'State'       },
+  { num: 2, label: 'Eligibility' },
+  { num: 3, label: 'Documents'   },
+  { num: 4, label: 'Apply'       },
+  { num: 5, label: 'Track'       },
 ];
 
 const DOCUMENTS = [
-  { id: 'aadhaar',  label: 'Aadhaar Card',            tip: 'Most accepted identity proof' },
-  { id: 'age',      label: 'Age Proof (Birth Cert / 10th Mark Sheet)', tip: 'Must prove you are 18+' },
-  { id: 'address',  label: 'Address Proof',            tip: 'Aadhaar / Utility bill / Bank passbook' },
-  { id: 'photo',    label: 'Recent Passport-size Photo',tip: 'White background, clear face' },
-  { id: 'pan',      label: 'PAN Card (optional)',       tip: 'Can be used as ID proof' },
+  { id: 'aadhaar', label: 'Aadhaar Card',                      tip: 'Most accepted identity proof',          required: true },
+  { id: 'age',     label: 'Age Proof (Birth Cert / 10th)',      tip: 'Must prove you are 18+',                required: true },
+  { id: 'address', label: 'Address Proof',                      tip: 'Aadhaar / Utility bill / Passbook',     required: true },
+  { id: 'photo',   label: 'Passport-size Photo',                tip: 'White background, clear face',          required: true },
+  { id: 'pan',     label: 'PAN Card',                           tip: 'Can be used as ID proof',               required: false },
 ];
 
 const STATUS_CONFIG = {
@@ -25,8 +29,74 @@ const STATUS_CONFIG = {
   'Approved':           { color: '#22C55E', bg: '#dcfce7', icon: '✅' },
 };
 
-// ── Step 1: Eligibility ──────────────────────────────────────────────────────
-function Step1({ onNext }) {
+/* ── Step 0: State Selector ───────────────────────────────────────────────── */
+function Step0({ onNext, selectedState, setSelectedState }) {
+  const { t } = useLang();
+  const [search, setSearch] = useState('');
+
+  const filtered = INDIA_STATES.filter(s =>
+    s.name.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div className="vid-step fade-in-up">
+      <div className="vid-step-icon">🗺️</div>
+      <h2 className="vid-step-title">{t('selectState')}</h2>
+      <p className="vid-step-sub">{t('stateHelp')}</p>
+
+      <div className="input-group" style={{ marginBottom: 10 }}>
+        <input
+          id="state-search"
+          className="input-field"
+          placeholder="Search state or UT…"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
+      </div>
+
+      <div className="state-grid">
+        {filtered.map(s => (
+          <button
+            key={s.code}
+            className={`state-chip ${selectedState?.code === s.code ? 'selected' : ''}`}
+            onClick={() => setSelectedState(s)}
+          >
+            {selectedState?.code === s.code && <span className="state-check">✓</span>}
+            {s.name}
+          </button>
+        ))}
+        {filtered.length === 0 && (
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.82rem', gridColumn: '1/-1', textAlign: 'center', padding: '16px 0' }}>
+            No results for "{search}"
+          </p>
+        )}
+      </div>
+
+      {selectedState && (
+        <div className="state-selected-card fade-in">
+          <div className="state-selected-info">
+            <span className="state-selected-name">📍 {selectedState.name}</span>
+            <a href={selectedState.ceo} target="_blank" rel="noopener noreferrer" className="state-ceo-link">
+              Visit State CEO Portal ↗
+            </a>
+          </div>
+        </div>
+      )}
+
+      <button
+        className="btn btn-primary btn-full"
+        style={{ marginTop: 14 }}
+        onClick={onNext}
+        disabled={!selectedState}
+      >
+        Continue with {selectedState ? selectedState.name : 'selected state'} →
+      </button>
+    </div>
+  );
+}
+
+/* ── Step 1: Eligibility ──────────────────────────────────────────────────── */
+function Step1({ onNext, onBack }) {
   const [age, setAge] = useState('');
   const [isCitizen, setIsCitizen] = useState(null);
   const [isResident, setIsResident] = useState(null);
@@ -45,7 +115,6 @@ function Step1({ onNext }) {
       const data = await res.json();
       setResult(data);
     } catch {
-      // Offline fallback
       const eligible = parseInt(age) >= 18 && isCitizen && isResident;
       setResult({
         eligible,
@@ -55,9 +124,7 @@ function Step1({ onNext }) {
             ? `You need to be 18+. You need ${18 - parseInt(age)} more year(s).`
             : 'Only Indian citizens who are residents can apply.',
       });
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   };
 
   return (
@@ -118,16 +185,17 @@ function Step1({ onNext }) {
           Continue → Documents Checklist
         </button>
       )}
+
+      <button className="btn btn-outline btn-full" style={{ marginTop: 8 }} onClick={onBack}>← Back</button>
     </div>
   );
 }
 
-// ── Step 2: Document Checklist ───────────────────────────────────────────────
+/* ── Step 2: Document Checklist ───────────────────────────────────────────── */
 function Step2({ onNext, onBack }) {
   const [checked, setChecked] = useState({});
-  const required = ['aadhaar', 'age', 'address', 'photo'];
+  const required = DOCUMENTS.filter(d => d.required).map(d => d.id);
   const allReady = required.every(id => checked[id]);
-
   const toggle = (id) => setChecked(prev => ({ ...prev, [id]: !prev[id] }));
 
   return (
@@ -156,7 +224,7 @@ function Step2({ onNext, onBack }) {
               <span className="doc-label">{doc.label}</span>
               <span className="doc-tip">{doc.tip}</span>
             </div>
-            {!required.includes(doc.id) && <span className="doc-optional">Optional</span>}
+            {!doc.required && <span className="doc-optional">Optional</span>}
           </button>
         ))}
       </div>
@@ -179,21 +247,22 @@ function Step2({ onNext, onBack }) {
   );
 }
 
-// ── Step 3: Application Redirect ─────────────────────────────────────────────
-function Step3({ onNext, onBack }) {
+/* ── Step 3: Apply ────────────────────────────────────────────────────────── */
+function Step3({ onNext, onBack, selectedState }) {
   const [clicked, setClicked] = useState(false);
 
-  const handleApply = () => {
+  const handleApply = (url) => {
     setClicked(true);
-    window.open('https://voters.eci.gov.in/', '_blank', 'noopener,noreferrer');
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   return (
     <div className="vid-step fade-in-up">
       <div className="vid-step-icon">🚀</div>
       <h2 className="vid-step-title">Apply on Official Portal</h2>
-      <p className="vid-step-sub">You're ready! Apply using the official Election Commission of India portal.</p>
+      <p className="vid-step-sub">You're ready! Apply via ECI or your state's CEO portal.</p>
 
+      {/* ECI National portal */}
       <div className="eci-card">
         <div className="eci-logo">🏛️</div>
         <div>
@@ -202,10 +271,31 @@ function Step3({ onNext, onBack }) {
         </div>
         <span className="eci-badge">Official</span>
       </div>
+      <button id="eci-apply-btn" className="btn btn-primary btn-full eci-apply-btn"
+        onClick={() => handleApply('https://voters.eci.gov.in/')}>
+        🚀 Apply on ECI Portal
+      </button>
 
-      <div className="vid-info-steps">
+      {/* State CEO portal */}
+      {selectedState && (
+        <>
+          <div className="state-divider"><span>or use your state portal</span></div>
+          <div className="eci-card" style={{ marginTop: 0 }}>
+            <div className="eci-logo">📍</div>
+            <div>
+              <p className="eci-name">{selectedState.name} CEO Portal</p>
+              <p className="eci-url">{selectedState.ceo.replace('https://', '')}</p>
+            </div>
+          </div>
+          <button className="btn btn-outline btn-full"
+            onClick={() => handleApply(selectedState.ceo)}>
+            🌐 Open {selectedState.name} Portal
+          </button>
+        </>
+      )}
+
+      <div className="vid-info-steps" style={{ marginTop: 14 }}>
         {[
-          'Click "Apply Now" below',
           'Select "New Voter Registration (Form 6)"',
           'Fill in your details and upload documents',
           'Submit and note your Reference ID',
@@ -217,18 +307,9 @@ function Step3({ onNext, onBack }) {
         ))}
       </div>
 
-      <div className="vid-warning">
-        <span>ℹ️</span>
-        <span>ElectPath does not collect or submit any of your personal information. The ECI portal is completely separate.</span>
-      </div>
-
-      <button id="eci-apply-btn" className="btn btn-primary btn-full eci-apply-btn" onClick={handleApply}>
-        🚀 Apply Now on voters.eci.gov.in
-      </button>
-
       {clicked && (
         <div className="applied-banner fade-in">
-          <p>✅ Portal opened! Come back here once you have your <strong>Reference ID</strong>.</p>
+          <p>✅ Portal opened! Return here with your <strong>Reference ID</strong>.</p>
         </div>
       )}
 
@@ -240,8 +321,8 @@ function Step3({ onNext, onBack }) {
   );
 }
 
-// ── Step 4: Track Application ─────────────────────────────────────────────────
-function Step4({ onBack }) {
+/* ── Step 4: Track ────────────────────────────────────────────────────────── */
+function Step4({ onBack, selectedState }) {
   const [savedProfile] = useLocalStorage('electpath_profile', null);
   const [refId, setRefId] = useState('');
   const [status, setStatus] = useState('Applied');
@@ -261,7 +342,7 @@ function Step4({ onBack }) {
           referenceId: refId,
           voterIdStatus: status,
           documentsUploaded: true,
-          state: savedProfile?.location || '',
+          state: selectedState?.name || savedProfile?.location || '',
         }),
       });
     } catch (_) {}
@@ -274,6 +355,12 @@ function Step4({ onBack }) {
       <div className="vid-step-icon">📊</div>
       <h2 className="vid-step-title">Track Your Application</h2>
       <p className="vid-step-sub">Save your Reference ID and track your Voter ID status here.</p>
+
+      {selectedState && (
+        <a href={selectedState.ceo} target="_blank" rel="noopener noreferrer" className="track-state-link">
+          📍 Track on {selectedState.name} CEO Portal ↗
+        </a>
+      )}
 
       <div className="input-group">
         <label htmlFor="ref-id">Reference / Application ID</label>
@@ -304,11 +391,7 @@ function Step4({ onBack }) {
         </div>
       </div>
 
-      {saved && (
-        <div className="saved-banner fade-in">
-          ✅ Application status saved to your profile!
-        </div>
-      )}
+      {saved && <div className="saved-banner fade-in">✅ Application status saved to your profile!</div>}
 
       <button className="btn btn-primary btn-full" onClick={saveStatus} disabled={saving || !refId}>
         {saving ? 'Saving…' : '💾 Save to Profile'}
@@ -316,7 +399,8 @@ function Step4({ onBack }) {
 
       <div className="track-tip">
         <span>🔗</span>
-        <span>Track your application at <a href="https://voters.eci.gov.in/" target="_blank" rel="noopener noreferrer" style={{ color: '#2D7FF9', fontWeight: 600 }}>voters.eci.gov.in</a></span>
+        <span>Track at <a href="https://voters.eci.gov.in/" target="_blank" rel="noopener noreferrer"
+          style={{ color: '#2D7FF9', fontWeight: 600 }}>voters.eci.gov.in</a></span>
       </div>
 
       <button className="btn btn-outline btn-full" style={{ marginTop: 8 }} onClick={onBack}>← Back</button>
@@ -324,55 +408,61 @@ function Step4({ onBack }) {
   );
 }
 
-// ── Main Page ────────────────────────────────────────────────────────────────
+/* ── Main Page ───────────────────────────────────────────────────────────── */
 export default function VoterIdIndia() {
   const navigate = useNavigate();
-  const [step, setStep] = useState(1);
+  const { t } = useLang();
+  const [step, setStep] = useState(0);
+  const [selectedState, setSelectedState] = useState(null);
 
   const next = () => setStep(s => Math.min(s + 1, 4));
-  const back = () => step > 1 ? setStep(s => s - 1) : navigate('/');
+  const back = () => step > 0 ? setStep(s => s - 1) : navigate('/');
 
   return (
     <div className="vid-page page">
       {/* Header */}
       <div className="vid-header">
-        <button className="back-btn" onClick={() => navigate('/')} aria-label="Back">
+        <button className="back-btn" onClick={back} aria-label="Back">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6" />
           </svg>
         </button>
         <div>
-          <h2>Voter ID — India 🇮🇳</h2>
+          <h2>{t('voterIdTitle')}</h2>
           <p>Official ECI Application Guide</p>
         </div>
+        {selectedState && (
+          <span className="vid-state-pill">📍 {selectedState.code}</span>
+        )}
       </div>
 
-      {/* Progress indicator */}
+      {/* Progress */}
       <div className="vid-progress">
         {STEPS.map((s, i) => (
           <div key={s.num} className="vid-progress-item">
-            <div className={`vid-step-dot ${step > s.num ? 'done' : step === s.num ? 'active' : ''}`}>
-              {step > s.num ? (
+            <div className={`vid-step-dot ${step > s.num - 1 ? 'done' : step === s.num - 1 ? 'active' : ''}`}>
+              {step > s.num - 1 ? (
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3.5" strokeLinecap="round">
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
               ) : s.num}
             </div>
-            <span className={`vid-step-label ${step === s.num ? 'active-label' : ''}`}>{s.label}</span>
+            <span className={`vid-step-label ${step === s.num - 1 ? 'active-label' : ''}`}>{s.label}</span>
             {i < STEPS.length - 1 && (
-              <div className={`vid-step-line ${step > s.num ? 'done-line' : ''}`} />
+              <div className={`vid-step-line ${step > s.num - 1 ? 'done-line' : ''}`} />
             )}
           </div>
         ))}
       </div>
 
-      {/* Step content */}
+      {/* Step Content */}
       <div className="vid-content">
-        {step === 1 && <Step1 onNext={next} />}
+        {step === 0 && <Step0 onNext={next} selectedState={selectedState} setSelectedState={setSelectedState} />}
+        {step === 1 && <Step1 onNext={next} onBack={back} />}
         {step === 2 && <Step2 onNext={next} onBack={back} />}
-        {step === 3 && <Step3 onNext={next} onBack={back} />}
-        {step === 4 && <Step4 onBack={back} />}
+        {step === 3 && <Step3 onNext={next} onBack={back} selectedState={selectedState} />}
+        {step === 4 && <Step4 onBack={back} selectedState={selectedState} />}
       </div>
     </div>
   );

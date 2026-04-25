@@ -77,8 +77,9 @@ export default function Chat() {
   const [charCount, setCharCount] = useState(0);
 
   const messagesEndRef = useRef(null);
-  const inputRef = useRef(null);
+  const inputRef       = useRef(null);
   const recognitionRef = useRef(null);
+  const abortRef       = useRef(null);   // FIX: was used but never declared
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

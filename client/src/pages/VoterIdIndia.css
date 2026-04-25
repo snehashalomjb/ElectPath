@@ -195,3 +195,66 @@
   font-size: 0.78rem; color: var(--text-muted);
   padding: 8px 0;
 }
+
+/* ── State selector (Step 0) ──────────────────────────────────────────────── */
+.vid-state-pill {
+  margin-left: auto;
+  font-size: 0.7rem; font-weight: 700;
+  background: var(--primary-light); color: var(--primary);
+  padding: 4px 10px; border-radius: 99px;
+  white-space: nowrap;
+}
+
+.state-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+  max-height: 240px;
+  overflow-y: auto;
+  padding: 2px;
+}
+.state-chip {
+  display: flex; align-items: center; gap: 5px;
+  padding: 9px 10px; border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border); background: var(--card);
+  font-size: 0.78rem; font-weight: 600; color: var(--text);
+  cursor: pointer; font-family: var(--font);
+  text-align: left; transition: all 0.18s;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.state-chip:hover  { border-color: var(--primary); background: var(--primary-light); }
+.state-chip.selected { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
+.state-check { color: var(--primary); font-size: 0.7rem; flex-shrink: 0; }
+
+.state-selected-card {
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+  border: 1.5px solid #7dd3fc; border-radius: var(--radius-md);
+  padding: 12px 14px;
+}
+.state-selected-info {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+}
+.state-selected-name { font-size: 0.84rem; font-weight: 700; color: var(--text); }
+.state-ceo-link {
+  font-size: 0.72rem; font-weight: 600; color: #0284c7;
+  text-decoration: underline; cursor: pointer;
+}
+
+.state-divider {
+  display: flex; align-items: center; gap: 10px;
+  color: var(--text-light); font-size: 0.72rem; margin: 6px 0;
+}
+.state-divider::before, .state-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+.track-state-link {
+  display: block;
+  background: var(--primary-light); color: var(--primary);
+  border-radius: var(--radius-sm); padding: 10px 14px;
+  font-size: 0.82rem; font-weight: 600;
+  text-decoration: none; text-align: center;
+  transition: opacity 0.18s;
+}
+.track-state-link:hover { opacity: 0.8; }
+

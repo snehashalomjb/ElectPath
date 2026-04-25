@@ -1,11 +1,15 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 
-// Splash & BottomNav are NOT lazy — must be available instantly
-import Splash   from './pages/Splash';
+import Splash    from './pages/Splash';
 import BottomNav from './components/BottomNav';
+import NotificationPanel from './components/NotificationPanel';
+import ToastContainer    from './components/ToastContainer';
+import LanguagePicker    from './components/LanguagePicker';
 
-// Code-split all pages for faster initial load
+import { LangProvider,  useLang  } from './context/LangContext';
+import { NotifProvider, useNotif } from './context/NotifContext';
+
 const Home            = lazy(() => import('./pages/Home'));
 const ElectionProcess = lazy(() => import('./pages/ElectionProcess'));
 const Chat            = lazy(() => import('./pages/Chat'));
@@ -14,12 +18,17 @@ const Profile         = lazy(() => import('./pages/Profile'));
 const VoterIdIndia    = lazy(() => import('./pages/VoterIdIndia'));
 const NotFound        = lazy(() => import('./pages/NotFound'));
 
-export default function App() {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const [showSplash, setShowSplash] = useState(() =>
-    !sessionStorage.getItem('splashShown')
+/* ── Inner app (needs access to both contexts) ─────────────────────────────── */
+function AppInner() {
+  const location  = useLocation();
+  const navigate  = useNavigate();
+  const { t }     = useLang();
+  const { unreadCount } = useNotif();
+
+  const [showSplash, setShowSplash] = useState(
+    () => !sessionStorage.getItem('splashShown')
   );
+  const [showNotifs, setShowNotifs] = useState(false);
 
   const handleSplashDone = () => {
     sessionStorage.setItem('splashShown', 'true');
@@ -31,17 +40,53 @@ export default function App() {
     if (!showSplash) document.body.classList.add('app-ready');
   }, [showSplash]);
 
+  // Hide notification panel when navigating
+  useEffect(() => { setShowNotifs(false); }, [location.pathname]);
+
   const navItems = [
-    { path: '/',         label: 'Home',     icon: 'home'     },
-    { path: '/chat',     label: 'Chat',     icon: 'chat'     },
-    { path: '/timeline', label: 'Timeline', icon: 'timeline' },
-    { path: '/profile',  label: 'Profile',  icon: 'profile'  },
+    { path: '/',         label: t('home'),     icon: 'home'     },
+    { path: '/chat',     label: t('chat'),     icon: 'chat'     },
+    { path: '/timeline', label: t('timeline'), icon: 'timeline' },
+    { path: '/profile',  label: t('profile'),  icon: 'profile'  },
   ];
 
   if (showSplash) return <Splash onDone={handleSplashDone} />;
 
+  /* pages that show the top action bar */
+  const showBar = !['/voter-india'].includes(location.pathname);
+
   return (
     <>
+      {/* ── Global top action bar (bell + lang) ─────────────────────────── */}
+      {showBar && (
+        <div className="global-top-bar">
+          <LanguagePicker />
+          <button
+            id="notif-bell-btn"
+            className="notif-bell-btn"
+            onClick={() => setShowNotifs(o => !o)}
+            aria-label="Notifications"
+          >
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 01-3.46 0"/>
+            </svg>
+            {unreadCount > 0 && (
+              <span className="notif-bell-badge">
+                {unreadCount > 9 ? '9+' : unreadCount}
+              </span>
+            )}
+          </button>
+        </div>
+      )}
+
+      {/* ── Notification slide-down panel ──────────────────────────────── */}
+      {showNotifs && (
+        <NotificationPanel onClose={() => setShowNotifs(false)} />
+      )}
+
+      {/* ── Page routes ────────────────────────────────────────────────── */}
       <Suspense fallback={
         <div className="page-loading">
           <div className="spinner" />
@@ -58,11 +103,27 @@ export default function App() {
           <Route path="*"            element={<NotFound />} />
         </Routes>
       </Suspense>
+
+      {/* ── Bottom navigation ──────────────────────────────────────────── */}
       <BottomNav
         items={navItems}
         currentPath={location.pathname}
         navigate={navigate}
       />
+
+      {/* ── Toast stack ────────────────────────────────────────────────── */}
+      <ToastContainer />
     </>
+  );
+}
+
+/* ── Root: wrap everything in providers ─────────────────────────────────────── */
+export default function App() {
+  return (
+    <LangProvider>
+      <NotifProvider>
+        <AppInner />
+      </NotifProvider>
+    </LangProvider>
   );
 }
