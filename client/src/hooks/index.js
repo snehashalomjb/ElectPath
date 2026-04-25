@@ -32,9 +32,11 @@ export function useLocalStorage(key, initialValue) {
 
   const setValue = (value) => {
     try {
-      const v = value instanceof Function ? value(stored) : value;
-      setStored(v);
-      window.localStorage.setItem(key, JSON.stringify(v));
+      setStored(prevStored => {
+        const v = value instanceof Function ? value(prevStored) : value;
+        window.localStorage.setItem(key, JSON.stringify(v));
+        return v;
+      });
     } catch (e) { console.error(e); }
   };
 
