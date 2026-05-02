@@ -20,14 +20,6 @@ export default function Home({ navigate }) {
       gradient: 'linear-gradient(135deg, #2D7FF9 0%, #6366f1 100%)',
     },
     {
-      id: 'ai-assistant',
-      path: '/chat',
-      emoji: '🤖',
-      title: t('aiAssistant'),
-      desc: t('askAnything'),
-      gradient: 'linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)',
-    },
-    {
       id: 'view-timeline',
       path: '/timeline',
       emoji: '📅',
@@ -58,6 +50,14 @@ export default function Home({ navigate }) {
       title: 'Election Results',
       desc: '5 States • May 4 Counting',
       gradient: 'linear-gradient(135deg, #060d1f 0%, #1a2e6b 100%)',
+    },
+    {
+      id: 'ballot-demo',
+      path: '/ballot',
+      emoji: '🗳️',
+      title: 'How to Vote',
+      desc: 'Try the EVM simulator',
+      gradient: 'linear-gradient(135deg, #1a1a4e 0%, #4f46e5 100%)',
     },
   ];
 
