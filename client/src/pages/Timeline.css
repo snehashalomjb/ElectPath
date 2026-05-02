@@ -51,13 +51,11 @@
 /* Filter tabs */
 .tl-filter-tabs {
   display: flex;
-  gap: 6px;
-  padding: 10px 16px;
-  overflow-x: auto;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 16px;
   background: var(--card);
   border-bottom: 1px solid var(--border);
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
 }
 .tl-filter-tabs::-webkit-scrollbar { display: none; }
 .tl-filter-tab {

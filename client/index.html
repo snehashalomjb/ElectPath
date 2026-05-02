@@ -2,17 +2,83 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="ElectPath — Your intelligent guide through every step of the voting process. Learn, track, and participate in democracy with ease." />
+
+    <!-- ── Primary SEO ─────────────────────────────────────────────────── -->
+    <title>ElectPath — Your AI-Powered Voting Guide for India 2026</title>
+    <meta name="description" content="ElectPath is your intelligent, non-partisan guide through every step of voting in India. Learn the election process, track key dates, register your Voter ID, and get live 2026 assembly election results." />
+    <meta name="keywords" content="election 2026, voter ID India, ECI, how to vote, election results, Tamil Nadu, West Bengal, Kerala, Assam, ballot guide" />
+    <meta name="author" content="ElectPath" />
+    <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#2D7FF9" />
-    <title>ElectPath — Your Voting Guide</title>
+    <link rel="canonical" href="https://electpath-62772444399.us-central1.run.app/" />
+
+    <!-- ── Open Graph (Facebook / WhatsApp share) ───────────────────────── -->
+    <meta property="og:type"        content="website" />
+    <meta property="og:url"         content="https://electpath-62772444399.us-central1.run.app/" />
+    <meta property="og:title"       content="ElectPath — Your AI-Powered Voting Guide" />
+    <meta property="og:description" content="Track India 2026 Assembly Election results live. Learn how to vote, apply for Voter ID, and get AI-powered answers about the election process." />
+    <meta property="og:image"       content="https://electpath-62772444399.us-central1.run.app/og-image.png" />
+    <meta property="og:locale"      content="en_IN" />
+    <meta property="og:site_name"   content="ElectPath" />
+
+    <!-- ── Twitter Card ─────────────────────────────────────────────────── -->
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:title"       content="ElectPath — Your AI-Powered Voting Guide" />
+    <meta name="twitter:description" content="Track India 2026 Assembly Election results live. AI chat, Voter ID guide, live countdown." />
+    <meta name="twitter:image"       content="https://electpath-62772444399.us-central1.run.app/og-image.png" />
+
+    <!-- ── Favicon & PWA ────────────────────────────────────────────────── -->
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="apple-touch-icon" href="/vite.svg" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="ElectPath" />
+
+    <!-- ── Google Fonts ──────────────────────────────────────────────────── -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- ── Google Analytics (GA4) ───────────────────────────────────────── -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ELECTPATH26"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-ELECTPATH26', {
+        page_title: 'ElectPath',
+        anonymize_ip: true,
+        cookie_flags: 'SameSite=None;Secure'
+      });
+    </script>
+
+    <!-- ── Structured Data (JSON-LD) ────────────────────────────────────── -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "ElectPath",
+      "description": "AI-powered election education platform for Indian voters. Track 2026 assembly elections, apply for Voter ID, and learn the voting process.",
+      "url": "https://electpath-62772444399.us-central1.run.app/",
+      "applicationCategory": "GovernmentApplication",
+      "operatingSystem": "Web Browser",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" },
+      "creator": { "@type": "Organization", "name": "ElectPath" },
+      "inLanguage": ["en", "hi", "ta", "te", "bn", "mr"]
+    }
+    </script>
   </head>
+
   <body>
-    <div id="root"></div>
+    <!-- Skip navigation for accessibility (screen readers) -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <div id="root" role="application" aria-label="ElectPath voting guide application">
+      <!-- React mounts here -->
+    </div>
+
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
