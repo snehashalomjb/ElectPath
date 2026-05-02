@@ -68,6 +68,8 @@ body.app-ready {
     0 0 0 12px #2d2d4e,
     0 24px 80px rgba(0,0,0,0.6);
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 /* On very small screens, fill the screen fully */
@@ -96,12 +98,20 @@ input, textarea, select { font-family: var(--font); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
 /* ---------- Page Layout — scrolls inside the fixed phone frame ---------- */
+/* page-wrap fills all space between global bar and bottom nav */
+.page-wrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
 .page {
   display: flex;
   flex-direction: column;
-  height: calc(var(--phone-h) - var(--nav-height));
-  max-height: calc(var(--phone-h) - var(--nav-height));
-  padding-bottom: 0;
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
@@ -113,7 +123,7 @@ input, textarea, select { font-family: var(--font); }
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: calc(var(--phone-h) - var(--nav-height));
+  flex: 1;
   gap: 12px;
 }
 
@@ -223,21 +233,18 @@ input, textarea, select { font-family: var(--font); }
 /* ---------- Global Top Action Bar — bell + lang picker ---------- */
 .global-top-bar {
   position: absolute;
-  top: 12px;
+  top: 10px;
   right: 14px;
-  z-index: 150;
+  z-index: 200;
   display: flex;
   align-items: center;
   gap: 8px;
   pointer-events: all;
 }
 
-/* ---------- Bottom Nav — pinned to bottom of phone frame ---------- */
+/* ---------- Bottom Nav — pinned to bottom via flex column ---------- */
 .bottom-nav {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  flex-shrink: 0;
   width: 100%;
   height: var(--nav-height);
   background: rgba(255,255,255,0.96);

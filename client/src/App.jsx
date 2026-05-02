@@ -90,25 +90,27 @@ function AppInner() {
       )}
 
       {/* ── Page routes ────────────────────────────────────────────────── */}
-      <Suspense fallback={
-        <div className="page-loading">
-          <div className="spinner" />
-          <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: 12 }}>Loading…</p>
-        </div>
-      }>
-        <Routes>
-          <Route path="/"            element={<Home navigate={navigate} />} />
-          <Route path="/process"     element={<ElectionProcess />} />
-          <Route path="/chat"        element={<Chat />} />
-          <Route path="/timeline"    element={<Timeline />} />
-          <Route path="/profile"     element={<Profile />} />
-          <Route path="/voter-india" element={<VoterIdIndia />} />
-          <Route path="/news"        element={<News />} />
-          <Route path="/ballot"      element={<BallotDemo />} />
-          <Route path="/results"     element={<ElectionResults />} />
-          <Route path="*"            element={<NotFound />} />
-        </Routes>
-      </Suspense>
+      <div className="page-wrap">
+        <Suspense fallback={
+          <div className="page-loading">
+            <div className="spinner" />
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: 12 }}>Loading…</p>
+          </div>
+        }>
+          <Routes>
+            <Route path="/"            element={<Home navigate={navigate} />} />
+            <Route path="/process"     element={<ElectionProcess />} />
+            <Route path="/chat"        element={<Chat />} />
+            <Route path="/timeline"    element={<Timeline />} />
+            <Route path="/profile"     element={<Profile />} />
+            <Route path="/voter-india" element={<VoterIdIndia />} />
+            <Route path="/news"        element={<News />} />
+            <Route path="/ballot"      element={<BallotDemo />} />
+            <Route path="/results"     element={<ElectionResults />} />
+            <Route path="*"            element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </div>
 
       {/* ── Bottom navigation ──────────────────────────────────────────── */}
       <BottomNav
