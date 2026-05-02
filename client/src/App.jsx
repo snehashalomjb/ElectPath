@@ -1,11 +1,12 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, useEffect, lazy, Suspense, useCallback } from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 
-import Splash    from './pages/Splash';
-import BottomNav from './components/BottomNav';
+import Splash           from './pages/Splash';
+import BottomNav        from './components/BottomNav';
 import NotificationPanel from './components/NotificationPanel';
-import ToastContainer    from './components/ToastContainer';
-import LanguagePicker    from './components/LanguagePicker';
+import ToastContainer   from './components/ToastContainer';
+import LanguagePicker   from './components/LanguagePicker';
+import ErrorBoundary    from './components/ErrorBoundary';
 
 import { LangProvider,  useLang  } from './context/LangContext';
 import { NotifProvider, useNotif } from './context/NotifContext';
@@ -20,6 +21,16 @@ const News            = lazy(() => import('./pages/News'));
 const BallotDemo      = lazy(() => import('./pages/BallotDemo'));
 const ElectionResults = lazy(() => import('./pages/ElectionResults'));
 const NotFound        = lazy(() => import('./pages/NotFound'));
+
+/** Send a page-view event to Google Analytics 4 */
+function trackPageView(path) {
+  if (typeof window.gtag === 'function') {
+    window.gtag('event', 'page_view', {
+      page_path:  path,
+      page_title: document.title,
+    });
+  }
+}
 
 /* ── Inner app (needs access to both contexts) ─────────────────────────────── */
 function AppInner() {
@@ -43,8 +54,11 @@ function AppInner() {
     if (!showSplash) document.body.classList.add('app-ready');
   }, [showSplash]);
 
-  // Hide notification panel when navigating
-  useEffect(() => { setShowNotifs(false); }, [location.pathname]);
+  // Hide notification panel when navigating + track GA page views
+  useEffect(() => {
+    setShowNotifs(false);
+    trackPageView(location.pathname);
+  }, [location.pathname]);
 
   const navItems = [
     { path: '/',        label: t('home'),  icon: 'home'    },
@@ -89,27 +103,34 @@ function AppInner() {
         <NotificationPanel onClose={() => setShowNotifs(false)} />
       )}
 
-      {/* ── Page routes ────────────────────────────────────────────────── */}
-      <div className="page-wrap">
-        <Suspense fallback={
-          <div className="page-loading">
-            <div className="spinner" />
-            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: 12 }}>Loading…</p>
-          </div>
-        }>
-          <Routes>
-            <Route path="/"            element={<Home navigate={navigate} />} />
-            <Route path="/process"     element={<ElectionProcess />} />
-            <Route path="/chat"        element={<Chat />} />
-            <Route path="/timeline"    element={<Timeline />} />
-            <Route path="/profile"     element={<Profile />} />
-            <Route path="/voter-india" element={<VoterIdIndia />} />
-            <Route path="/news"        element={<News />} />
-            <Route path="/ballot"      element={<BallotDemo />} />
-            <Route path="/results"     element={<ElectionResults />} />
-            <Route path="*"            element={<NotFound />} />
-          </Routes>
-        </Suspense>
+      {/* ── Page routes (scrollable area above bottom nav) ─────── */}
+      <div
+        id="main-content"
+        className="page-wrap"
+        role="main"
+        aria-label="ElectPath page content"
+      >
+        <ErrorBoundary>
+          <Suspense fallback={
+            <div className="page-loading" role="status" aria-live="polite">
+              <div className="spinner" aria-hidden="true" />
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: 12 }}>Loading…</p>
+            </div>
+          }>
+            <Routes>
+              <Route path="/"            element={<Home navigate={navigate} />} />
+              <Route path="/process"     element={<ElectionProcess />} />
+              <Route path="/chat"        element={<Chat />} />
+              <Route path="/timeline"    element={<Timeline />} />
+              <Route path="/profile"     element={<Profile />} />
+              <Route path="/voter-india" element={<VoterIdIndia />} />
+              <Route path="/news"        element={<News />} />
+              <Route path="/ballot"      element={<BallotDemo />} />
+              <Route path="/results"     element={<ElectionResults />} />
+              <Route path="*"            element={<NotFound />} />
+            </Routes>
+          </Suspense>
+        </ErrorBoundary>
       </div>
 
       {/* ── Bottom navigation ──────────────────────────────────────────── */}

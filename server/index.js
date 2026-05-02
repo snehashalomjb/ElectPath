@@ -37,10 +37,22 @@ app.use(helmet({
     },
   },
   crossOriginEmbedderPolicy: false,
-  referrerPolicy:            { policy: 'strict-origin-when-cross-origin' },
-  hsts:                      isProd ? { maxAge: 31536000, includeSubDomains: true, preload: true } : false,
+  referrerPolicy:    { policy: 'strict-origin-when-cross-origin' },
+  hsts:              isProd ? { maxAge: 31536000, includeSubDomains: true, preload: true } : false,
+  hidePoweredBy:     true,
+  xssFilter:         true,
+  noSniff:           true,
   permittedCrossDomainPolicies: { permittedPolicies: 'none' },
 }));
+
+// Permissions-Policy — restrict browser features not needed by ElectPath
+app.use((req, res, next) => {
+  res.setHeader(
+    'Permissions-Policy',
+    'camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()'
+  );
+  next();
+});
 
 // ── CORS ─────────────────────────────────────────────────────────────────────
 const allowedOrigins = [
