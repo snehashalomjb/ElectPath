@@ -83,10 +83,14 @@ export default function Timeline() {
 
   return (
     <div className="timeline-page page">
-      {/* Header */}
-      <div className="screen-header">
-        <h2>{t('electionTimeline')}</h2>
-        <p>{t('keyDatesFor')}</p>
+      {/* Gradient Header */}
+      <div className="tl-header">
+        <div className="tl-header-bg" />
+        <div className="tl-header-content">
+          <div className="tl-header-badge">📅 Election 2026</div>
+          <h1 className="tl-header-title">{t('electionTimeline')}</h1>
+          <p className="tl-header-sub">{t('keyDatesFor')}</p>
+        </div>
       </div>
 
       {/* Summary pills */}
@@ -107,7 +111,7 @@ export default function Timeline() {
         </div>
       )}
 
-      {/* Filter tabs — BUG-007: keyboard accessible with ARIA */}
+      {/* Filter tabs */}
       <div className="tl-filter-tabs" role="tablist" aria-label="Filter events">
         {[
           { key: 'all',       label: t('all'),       count: events.length },
@@ -122,7 +126,6 @@ export default function Timeline() {
             aria-selected={filter === f.key}
             className={`tl-filter-tab ${filter === f.key ? 'active' : ''}`}
             onClick={() => setFilter(f.key)}
-            onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && setFilter(f.key)}
           >
             {f.label}
             {!loading && <span className="tl-filter-count">{f.count}</span>}

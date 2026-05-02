@@ -129,7 +129,7 @@ input, textarea, select { font-family: var(--font); }
 
 /* ---------- Screen Header ---------- */
 .screen-header {
-  padding: 20px 20px 16px;
+  padding: 20px 110px 16px 20px;   /* right: safe area for global-top-bar */
   background: var(--card);
   border-bottom: 1px solid var(--border);
   position: sticky;
