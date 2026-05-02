@@ -1,7 +1,7 @@
 # ElectPath 🗳️
 **Your AI-powered guide through every step of voting**
 
-🌍 **Live Application:** [https://electpath-uaxkdit2xq-uc.a.run.app](https://electpath-uaxkdit2xq-uc.a.run.app)
+🌍 **Live Application:** [https://electpath-62772444399.us-central1.run.app](https://electpath-62772444399.us-central1.run.app)
 
 ---
 
