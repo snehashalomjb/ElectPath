@@ -148,6 +148,9 @@ const startServer = async () => {
   );
 };
 
-startServer();
+// Only bind to a port when run directly — not when required by Jest tests
+if (require.main === module) {
+  startServer();
+}
 
-module.exports = app; // export for testing
+module.exports = app; // export for testing (Jest requires this file directly)
