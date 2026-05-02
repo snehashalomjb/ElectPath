@@ -33,6 +33,37 @@ const icons = {
       <circle cx="12" cy="7" r="4"/>
     </svg>
   ),
+  news: (active) => (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+      stroke={active ? '#2D7FF9' : '#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 22h16a2 2 0 002-2V4a2 2 0 00-2-2H8a2 2 0 00-2 2v16a2 2 0 01-2 2zm0 0a2 2 0 01-2-2v-9c0-1.1.9-2 2-2h2"/>
+      <path d="M18 14h-8M15 18h-5M10 6h8v4h-8z" fill={active ? '#dbeafe' : 'none'}/>
+    </svg>
+  ),
+  ballot: (active) => (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+      stroke={active ? '#2D7FF9' : '#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+      <circle cx="8.5" cy="8.5" r="1.5" fill={active ? '#2D7FF9' : '#94a3b8'}/>
+      <circle cx="8.5" cy="15.5" r="1.5" fill={active ? '#2D7FF9' : '#94a3b8'}/>
+      <line x1="12" y1="8.5" x2="19" y2="8.5"/>
+      <line x1="12" y1="15.5" x2="19" y2="15.5"/>
+    </svg>
+  ),
+  results: (active) => (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+      stroke={active ? '#2D7FF9' : '#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="18" y1="20" x2="18" y2="10"/>
+      <line x1="12" y1="20" x2="12" y2="4"/>
+      <line x1="6"  y1="20" x2="6"  y2="14"/>
+      <line x1="2"  y1="20" x2="22" y2="20"/>
+      {active && <>
+        <rect x="15" y="10" width="6" height="10" fill="#dbeafe" stroke="none" rx="1"/>
+        <rect x="9"  y="4"  width="6" height="16" fill="#bfdbfe" stroke="none" rx="1"/>
+        <rect x="3"  y="14" width="6" height="6"  fill="#dbeafe" stroke="none" rx="1"/>
+      </>}
+    </svg>
+  ),
 };
 
 export default function BottomNav({ items, currentPath, navigate }) {

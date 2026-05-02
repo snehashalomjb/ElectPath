@@ -43,6 +43,22 @@ export default function Home({ navigate }) {
       desc: t('personalizedTips'),
       gradient: 'linear-gradient(135deg, #F59E0B 0%, #EF4444 100%)',
     },
+    {
+      id: 'election-news',
+      path: '/news',
+      emoji: '📰',
+      title: 'Election News',
+      desc: 'Latest updates & alerts',
+      gradient: 'linear-gradient(135deg, #0f2027 0%, #2c5364 100%)',
+    },
+    {
+      id: 'election-results',
+      path: '/results',
+      emoji: '📊',
+      title: 'Election Results',
+      desc: '5 States • May 4 Counting',
+      gradient: 'linear-gradient(135deg, #060d1f 0%, #1a2e6b 100%)',
+    },
   ];
 
   return (

@@ -16,6 +16,9 @@ const Chat            = lazy(() => import('./pages/Chat'));
 const Timeline        = lazy(() => import('./pages/Timeline'));
 const Profile         = lazy(() => import('./pages/Profile'));
 const VoterIdIndia    = lazy(() => import('./pages/VoterIdIndia'));
+const News            = lazy(() => import('./pages/News'));
+const BallotDemo      = lazy(() => import('./pages/BallotDemo'));
+const ElectionResults = lazy(() => import('./pages/ElectionResults'));
 const NotFound        = lazy(() => import('./pages/NotFound'));
 
 /* ── Inner app (needs access to both contexts) ─────────────────────────────── */
@@ -44,10 +47,10 @@ function AppInner() {
   useEffect(() => { setShowNotifs(false); }, [location.pathname]);
 
   const navItems = [
-    { path: '/',         label: t('home'),     icon: 'home'     },
-    { path: '/chat',     label: t('chat'),     icon: 'chat'     },
-    { path: '/timeline', label: t('timeline'), icon: 'timeline' },
-    { path: '/profile',  label: t('profile'),  icon: 'profile'  },
+    { path: '/',        label: t('home'),  icon: 'home'    },
+    { path: '/news',    label: 'News',     icon: 'news'    },
+    { path: '/results', label: 'Results',  icon: 'results' },
+    { path: '/chat',    label: t('chat'),  icon: 'chat'    },
   ];
 
   if (showSplash) return <Splash onDone={handleSplashDone} />;
@@ -100,6 +103,9 @@ function AppInner() {
           <Route path="/timeline"    element={<Timeline />} />
           <Route path="/profile"     element={<Profile />} />
           <Route path="/voter-india" element={<VoterIdIndia />} />
+          <Route path="/news"        element={<News />} />
+          <Route path="/ballot"      element={<BallotDemo />} />
+          <Route path="/results"     element={<ElectionResults />} />
           <Route path="*"            element={<NotFound />} />
         </Routes>
       </Suspense>
